@@ -20,8 +20,7 @@ LABEL org.opencontainers.image.description="A image build from the container tem
 LABEL org.opencontainers.image.documentation="https://github.com/RemkoMolier/container-template/documentation.md"
 
 # Install packages
-RUN apk update && \
-    apk upgrade
+RUN apk --update --no-cache upgrade
 
 # Run by default as nobody
 USER nobody
