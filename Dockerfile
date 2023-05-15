@@ -23,5 +23,8 @@ LABEL org.opencontainers.image.documentation="https://github.com/RemkoMolier/con
 RUN apk update && \
     apk upgrade
 
+# Run by default as nobody
+USER nobody
+
 # Define entrypoint
 ENTRYPOINT [ "/bin/sh" ]
