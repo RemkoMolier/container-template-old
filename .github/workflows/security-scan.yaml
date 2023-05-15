@@ -45,7 +45,7 @@ jobs:
       - id: grype
         uses: anchore/scan-action@v3
         with:
-          image: "${{ steps.dotenv.outputs.name }}:${{ steps.cache-name.outputs.cache-name }}"
+          image: "${{ steps.dotenv.outputs.name }}:${{ steps.platform.outputs.id }}"
           fail-build: true
           severity-cutoff: critical
       - name: Upload the vulnerability report
@@ -55,7 +55,7 @@ jobs:
           category: grype
       - uses: aquasecurity/trivy-action@master
         with:
-          image_ref: "${{ steps.dotenv.outputs.name }}:${{ steps.cache-name.outputs.cache-name }}"
+          image_ref: "${{ steps.dotenv.outputs.name }}:${{ steps.platform.outputs.id }}"
           format: "sarif"
           output: "trivy-results.sarif"
       - name: Upload the vulnerability report
