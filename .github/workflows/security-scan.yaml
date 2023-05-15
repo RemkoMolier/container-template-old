@@ -55,7 +55,7 @@ jobs:
           category: grype
       - uses: aquasecurity/trivy-action@master
         with:
-          image_ref: "${{ steps.dotenv.outputs.name }}:${{ steps.platform.outputs.id }}"
+          image-ref: "${{ steps.dotenv.outputs.name }}:${{ steps.platform.outputs.id }}"
           format: "sarif"
           output: "trivy-results.sarif"
       - name: Upload the vulnerability report
