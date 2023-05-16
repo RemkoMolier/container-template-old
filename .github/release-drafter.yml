@@ -21,7 +21,7 @@ categories:
       - 'bugfix'
       - 'bug'
   - title: '🧰 Maintenance'
-    label:
+    labels:
       - 'chore'
   - title: '⬆️ Dependencies'
     labels:
