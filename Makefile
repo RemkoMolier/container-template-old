@@ -42,3 +42,19 @@ build : ## Build image with name `${NAME}`, for example, `make build`
 		--load \
 		.
 .PHONY : build
+
+# --------------------- #
+# Interface with Github #
+# --------------------- #
+
+release : ## Release with `${RELEASE}`, for example, `make release`
+	@[[ -z $$(git status -s) ]] || (echo "Release should only be performed on a clean git tree"; exit 1)
+	@if [ $$(git tag -l ${RELEASE}) ]; then \
+		git tag -d ${RELEASE}; \
+		git push origin :${RELEASE}; \
+	fi
+	@git tag ${RELEASE};
+	@git push origin ${RELEASE};
+	@git fetch --tags;
+
+.PHONY : release
