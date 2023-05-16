@@ -8,12 +8,16 @@ on:
 permissions: read-all
 
 jobs:
-  pre-release:
-    name: "Pre Release"
+  check-code:
+    uses: ./.github/workflows/check-code.yaml
+  build:
+    name: "Build"
     runs-on: "ubuntu-latest"
     permissions:
       contents: read
       packages: write
+    needs:
+      - check-code
     steps:
       - uses: actions/checkout@v3
       - id: dotenv
@@ -21,7 +25,7 @@ jobs:
       - id: version
         run: |
           echo 'application_version=${{ steps.dotenv.outputs.release }}' | sed 's/-r.*$//g' >> $GITHUB_OUTPUT
-          ech0 'alpine_suffix=r${{ steps.dotenv.outputs.release}}' | sed 's/^.*-r//g' >> $GITHUB_OUTPUT
+          echo 'alpine_suffix=r${{ steps.dotenv.outputs.release}}' | sed 's/^.*-r//g' >> $GITHUB_OUTPUT
       - id: meta
         uses: docker/metadata-action@v4
         with:
@@ -48,3 +52,20 @@ jobs:
             BUILD_DATE=${{ github.event.created_at }}
             VCS_REF=${{ github.event.head }}
           tags: ${{ steps.meta.outputs.tags }}
+          sbom: true
+          provenance: false
+      - uses: release-drafter/release-drafter@v5
+        with:
+          name: sha-${GITHUB_SHA::7}
+          tag: sha-${GITHUB_SHA::7}
+          publish: true
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: anchore/sbom-action@v0.14.2
+        with:
+          image: ${{ steps.dotenv.outputs.name }}:latest
+          artifact-name: sbom.spdx
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          dependency-snapshot: true
+          upload-release-assets: true
